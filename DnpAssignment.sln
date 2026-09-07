@@ -6,6 +6,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Server", "Server", "{2DE323
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Entities", "Entities\Entities.csproj", "{BDDD5CA1-7032-4FA8-86B1-6E0B33A1F001}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RepositoryContracts", "RepositoryContracts\RepositoryContracts.csproj", "{4AE00771-012D-473B-A83B-B1FEE7226FE4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -20,8 +22,13 @@ Global
 		{BDDD5CA1-7032-4FA8-86B1-6E0B33A1F001}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BDDD5CA1-7032-4FA8-86B1-6E0B33A1F001}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BDDD5CA1-7032-4FA8-86B1-6E0B33A1F001}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4AE00771-012D-473B-A83B-B1FEE7226FE4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4AE00771-012D-473B-A83B-B1FEE7226FE4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4AE00771-012D-473B-A83B-B1FEE7226FE4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4AE00771-012D-473B-A83B-B1FEE7226FE4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{BDDD5CA1-7032-4FA8-86B1-6E0B33A1F001} = {2DE323E2-F971-4FC3-827B-4549E9C4C2C6}
+		{4AE00771-012D-473B-A83B-B1FEE7226FE4} = {2DE323E2-F971-4FC3-827B-4549E9C4C2C6}
 	EndGlobalSection
 EndGlobal
