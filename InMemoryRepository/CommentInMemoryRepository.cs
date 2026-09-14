@@ -3,9 +3,18 @@ using Entities;
 
 namespace InMemoryRepository;
 
-public class commentInMemoryRepository : ICommentRepository
+public class CommentInMemoryRepository : ICommentRepository
 {
     private List<Comment> comments = new();
+
+    public CommentInMemoryRepository()
+    {
+        comments.Add(new Comment { CommentId = 1, Body = "First comment", PostId = 1, UserId = 1 });
+        comments.Add(new Comment { CommentId = 2, Body = "Second comment", PostId = 2, UserId = 2 });
+        comments.Add(new Comment { CommentId = 3, Body = "Third comment", PostId = 3, UserId = 3 });
+        comments.Add(new Comment { CommentId = 4, Body = "Fourth comment", PostId = 4, UserId = 4 });
+        comments.Add(new Comment { CommentId = 5, Body = "Fifth comment", PostId = 5, UserId = 5 });
+    }
 
     public Task<Comment> AddAsync(Comment comment)
     {
