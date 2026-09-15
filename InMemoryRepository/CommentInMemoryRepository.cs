@@ -3,7 +3,7 @@ using Entities;
 
 namespace InMemoryRepository;
 
-public class commentInMemoryRepository : ICommentRepository
+public class CommentInMemoryRepository : ICommentRepository
 {
     private List<Comment> comments = new();
 
@@ -18,14 +18,14 @@ public class commentInMemoryRepository : ICommentRepository
 
     public Task UpdateAsync(Comment comment)
     {
-        Comment? existingcomment = comments.SingleOrDefault(u =>u.CommentId  == comment.CommentId);
-        if (existingcomment is null)
+        Comment? existingComment = comments.SingleOrDefault(u =>u.CommentId  == comment.CommentId);
+        if (existingComment is null)
         {
             throw new InvalidOperationException(
                 $"comment with ID '{comment.CommentId}' not found");
         }
 
-        comments.Remove(existingcomment);
+        comments.Remove(existingComment);
         comments.Add(comment);
 
         return Task.CompletedTask;
