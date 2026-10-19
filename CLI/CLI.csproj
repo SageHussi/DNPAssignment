@@ -9,6 +9,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Entities\Entities.csproj" />
+      <ProjectReference Include="..\FileRepository\FileRepository.csproj" />
       <ProjectReference Include="..\InMemoryRepository\InMemoryRepository.csproj" />
       <ProjectReference Include="..\RepositoryContracts\RepositoryContracts.csproj" />
     </ItemGroup>
