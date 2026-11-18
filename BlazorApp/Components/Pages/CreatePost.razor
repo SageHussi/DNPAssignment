@@ -1,6 +1,7 @@
 @page "/createpost"
 @using ApiContracts
 @using BlazorApp.Services
+@attribute [Authorize]
 @inject IPostService PostService
 @inject NavigationManager Nav
 
@@ -23,12 +24,23 @@
 }
 
 @code {
-    // Hardcoded until Assignment 6 (login). This user MUST exist.
-    private const int CurrentUserId = 2;
+    [CascadingParameter]
+    public Task<AuthenticationState> State { get; set; } = default!;
 
     private string title = "";
     private string body = "";
     private string message = "";
+
+    private async Task<int?> GetUserIdAsync()
+    {
+        ClaimsPrincipal user = (await State).User;
+        if (user.Identity is null || !user.Identity.IsAuthenticated)
+        {
+            return null;
+        }
+        string? idText = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        return idText == null ? null : int.Parse(idText);
+    }
 
     private async Task CreateAsync()
     {
@@ -40,8 +52,15 @@
 
         try
         {
+            int? userId = await GetUserIdAsync();
+            if (userId == null)
+            {
+                message = "You must be logged in.";
+                return;
+            }
+
             PostDto created = await PostService.AddPostAsync(
-                new CreatePostDto { Title = title, Body = body, UserId = CurrentUserId });
+                new CreatePostDto { Title = title, Body = body, UserId = userId.Value });
 
             Nav.NavigateTo($"/posts/{created.Id}");
         }
