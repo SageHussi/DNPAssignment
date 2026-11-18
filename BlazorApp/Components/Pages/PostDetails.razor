@@ -1,0 +1,112 @@
+@page "/posts/{Id:int}"
+@using ApiContracts
+@using BlazorApp.Services
+@inject IPostService PostService
+@inject IUserService UserService
+@inject ICommentService CommentService
+
+@if (errorMessage != null)
+{
+    <p class="text-danger">@errorMessage</p>
+}
+else if (post == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <h3>@post.Title</h3>
+    <p class="text-muted">by @GetUsername(post.UserId)</p>
+    <p>@post.Body</p>
+
+    <hr />
+    <h5>Comments (@comments.Count)</h5>
+
+    @if (comments.Count == 0)
+    {
+        <p>No comments yet.</p>
+    }
+    @foreach (CommentDto comment in comments)
+    {
+        <div class="mb-2">
+            <strong>@GetUsername(comment.UserId)</strong>: @comment.Body
+        </div>
+    }
+
+    <hr />
+    <h5>Add a comment</h5>
+    <textarea @bind="newComment" rows="3" style="width: 400px"></textarea><br />
+    <button class="btn btn-primary mt-1" @onclick="AddCommentAsync">Comment</button>
+
+    @if (!string.IsNullOrEmpty(commentError))
+    {
+        <p class="text-danger">@commentError</p>
+    }
+}
+
+<p class="mt-3"><a href="/posts">&larr; Back to posts</a></p>
+
+@code {
+    // Hardcoded until Assignment 6 (login). This user MUST exist.
+    private const int CurrentUserId = 2;
+
+    [Parameter]
+    public int Id { get; set; }
+
+    private PostDto? post;
+    private List<CommentDto> comments = new();
+    private Dictionary<int, string> usernames = new();
+    private string? errorMessage;
+    private string newComment = "";
+    private string? commentError;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            post = await PostService.GetPostAsync(Id);
+
+            ICollection<UserDto> users = await UserService.GetUsersAsync(null);
+            usernames = users.ToDictionary(u => u.Id, u => u.Username);
+
+            await LoadCommentsAsync();
+        }
+        catch (Exception e)
+        {
+            errorMessage = "Error: " + e.Message;
+        }
+    }
+
+    private async Task LoadCommentsAsync()
+    {
+        comments = (await CommentService.GetCommentsAsync(Id, null)).ToList();
+    }
+
+    private async Task AddCommentAsync()
+    {
+        if (string.IsNullOrWhiteSpace(newComment))
+        {
+            commentError = "Write something first.";
+            return;
+        }
+
+        try
+        {
+            await CommentService.AddCommentAsync(
+                new CreateCommentDto { Body = newComment, UserId = CurrentUserId, PostId = Id });
+
+            newComment = "";
+            commentError = null;
+            await LoadCommentsAsync();
+        }
+        catch (Exception e)
+        {
+            commentError = "Error: " + e.Message;
+        }
+    }
+
+    private string GetUsername(int userId)
+    {
+        return usernames.TryGetValue(userId, out string? name) ? name : "unknown";
+    }
+}

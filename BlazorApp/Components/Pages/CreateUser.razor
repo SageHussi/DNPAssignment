@@ -1,0 +1,54 @@
+@page "/createuser"
+@inject IUserService UserService
+
+<h3>Create user</h3>
+
+<div class="mb-2">
+    <label>Username</label><br />
+    <input @bind="username" />
+</div>
+<div class="mb-2">
+    <label>Password</label><br />
+    <input type="password" @bind="password" />
+</div>
+
+<button class="btn btn-primary" @onclick="CreateAsync">Create</button>
+
+@if (!string.IsNullOrEmpty(message))
+{
+    <p class="mt-2">@message</p>
+}
+
+@code {
+    private string username = "";
+    private string password = "";
+    private string message = "";
+
+    private async Task CreateAsync()
+    {
+        if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password))
+        {
+            message = "Username and password are required.";
+            return;
+        }
+
+        try
+        {
+            UserDto created = await UserService.AddUserAsync(
+                new CreateUserDto { Username = username, Password = password });
+
+            message = $"Created user '{created.Username}' with id {created.Id}.";
+            username = "";
+            password = "";
+        }
+        catch (Exception e)
+        {
+            message = "Error: " + e.Message;
+        }
+    }
+}
+
+
+
+@using BlazorApp.Services
+@using ApiContracts

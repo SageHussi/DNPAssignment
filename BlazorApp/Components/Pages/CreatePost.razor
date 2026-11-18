@@ -1,0 +1,53 @@
+@page "/createpost"
+@using ApiContracts
+@using BlazorApp.Services
+@inject IPostService PostService
+@inject NavigationManager Nav
+
+<h3>Create post</h3>
+
+<div class="mb-2">
+    <label>Title</label><br />
+    <input @bind="title" style="width: 400px" />
+</div>
+<div class="mb-2">
+    <label>Body</label><br />
+    <textarea @bind="body" rows="6" style="width: 400px"></textarea>
+</div>
+
+<button class="btn btn-primary" @onclick="CreateAsync">Post</button>
+
+@if (!string.IsNullOrEmpty(message))
+{
+    <p class="mt-2 text-danger">@message</p>
+}
+
+@code {
+    // Hardcoded until Assignment 6 (login). This user MUST exist.
+    private const int CurrentUserId = 2;
+
+    private string title = "";
+    private string body = "";
+    private string message = "";
+
+    private async Task CreateAsync()
+    {
+        if (string.IsNullOrWhiteSpace(title) || string.IsNullOrWhiteSpace(body))
+        {
+            message = "Title and body are required.";
+            return;
+        }
+
+        try
+        {
+            PostDto created = await PostService.AddPostAsync(
+                new CreatePostDto { Title = title, Body = body, UserId = CurrentUserId });
+
+            Nav.NavigateTo($"/posts/{created.Id}");
+        }
+        catch (Exception e)
+        {
+            message = "Error: " + e.Message;
+        }
+    }
+}

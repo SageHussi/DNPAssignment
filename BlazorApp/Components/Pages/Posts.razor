@@ -1,0 +1,58 @@
+@page "/posts"
+@using ApiContracts
+@using BlazorApp.Services
+@inject IPostService PostService
+@inject IUserService UserService
+
+<h3>Posts</h3>
+
+@if (errorMessage != null)
+{
+    <p class="text-danger">@errorMessage</p>
+}
+else if (posts == null)
+{
+    <p>Loading...</p>
+}
+else if (posts.Count == 0)
+{
+    <p>No posts yet. <a href="/createpost">Create the first one</a>.</p>
+}
+else
+{
+    <ul class="list-unstyled">
+        @foreach (PostDto post in posts)
+        {
+            <li class="mb-2">
+                <a href="/posts/@post.Id"><strong>@post.Title</strong></a>
+                <span> by @GetUsername(post.UserId)</span>
+            </li>
+        }
+    </ul>
+}
+
+@code {
+    private List<PostDto>? posts;
+    private Dictionary<int, string> usernames = new();
+    private string? errorMessage;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            posts = (await PostService.GetPostsAsync(null, null)).ToList();
+
+            ICollection<UserDto> users = await UserService.GetUsersAsync(null);
+            usernames = users.ToDictionary(u => u.Id, u => u.Username);
+        }
+        catch (Exception e)
+        {
+            errorMessage = "Error: " + e.Message;
+        }
+    }
+
+    private string GetUsername(int userId)
+    {
+        return usernames.TryGetValue(userId, out string? name) ? name : "unknown";
+    }
+}
